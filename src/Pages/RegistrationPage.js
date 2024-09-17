@@ -1,30 +1,45 @@
-import React, { useState } from 'react';
-import './RegistrationPage.css'; // Import the CSS file
-
+import React, { useState } from "react";
+import "./RegistrationPage.css"; // Import the CSS file
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "./firebase";
+import { setDoc, doc } from "firebase/firestore";
 function RegistrationPage() {
   // State hooks for form fields
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Form submission handler
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent form submission
-
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          firstName: fullName,
+        });
+      }
+      console.log(user);
+      console.log("User Registered Successfully");
+    } catch (error) {
+      console.log(error.message);
+    }
     // Basic validation
     if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+      alert("Passwords do not match!");
       return;
     }
 
     // For demonstration, log the form data
-    console.log('Full Name:', fullName);
-    console.log('Email:', email);
-    console.log('Password:', password);
+    console.log("Full Name:", fullName);
+    console.log("Email:", email);
+    console.log("Password:", password);
 
     // Redirect or show a success message
-    alert('Registration successful!');
+    alert("Registration successful!");
   };
 
   return (
