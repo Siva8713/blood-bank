@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "./LoginPage.css"; // Import the CSS file
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "../Components/firebase";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   // State hooks for form fields
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   // Form submission handler
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -15,15 +16,17 @@ function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("user logged in successfully");
+      navigate("/home");
+      alert("Logged is successfully!");
     } catch (error) {
-      console.log("unsuccess login");
+      console.log(error.message);
+      alert("Logged is not successfully!");
     }
     // For demonstration, log the form data
     console.log("Email:", email);
     console.log("Password:", password);
 
     // You would typically handle authentication here
-    alert("Logged in successfully!");
   };
 
   return (
@@ -59,7 +62,7 @@ function LoginPage() {
           <button type="submit">Log in</button>
         </form>
         <p className="signup-link">
-          Don&apos;t have an account? <a href="/sign-up">Sign up</a>
+          Don't have an account? <a href="/register">Sign up</a>
         </p>
       </div>
     </main>
