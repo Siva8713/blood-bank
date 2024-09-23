@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { db } from "./firebase"; // Adjust the path according to your structure
 import { setDoc, doc } from "firebase/firestore";
 import Header from "./Header";
+import "./form.css";
 
 function DonateBlood() {
   const [name, setName] = useState("");
@@ -11,12 +12,12 @@ function DonateBlood() {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bloodGroup, setBloodGroup] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       await setDoc(doc(db, "donors", email), {
-        // Using email as a unique identifier
         name,
         age,
         gender,
@@ -25,16 +26,26 @@ function DonateBlood() {
         bloodGroup,
       });
       alert("Donor registered successfully!");
+      // Reset form fields
+      setName("");
+      setAge("");
+      setGender("");
+      setEmail("");
+      setPhoneNumber("");
+      setBloodGroup("");
     } catch (error) {
       console.error("Error adding document: ", error);
+      setError(
+        "Failed to register donor. Please check your permissions and try again."
+      );
     }
   };
 
   return (
     <>
-      <Header />
       <form onSubmit={handleSubmit}>
         <h2>Donate Blood</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <input
           type="text"
           placeholder="Name"
@@ -88,7 +99,9 @@ function DonateBlood() {
           <option value="O+">O+</option>
           <option value="O-">O-</option>
         </select>
-        <button type="submit">Register as Donor</button>
+        <button type="submit" className="submit_button">
+          Register as Donor
+        </button>
       </form>
     </>
   );

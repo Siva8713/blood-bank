@@ -76,7 +76,9 @@ function RequestBlood() {
           onChange={(e) => setHospitalAddress(e.target.value)}
           required
         />
-        <button type="submit">Request Blood</button>
+        <button type="submit" className="submit_button">
+          Request Blood
+        </button>
       </form>
     </>
   );

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../Components/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import UserList from "../Components/UserList";
 import Header from "../Components/Header";
+import EmergencyNeed from "../Components/EmergencyNeed";
 
-function HomePage() {
+function HomePage({ setUser }) {
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
 
@@ -20,18 +21,21 @@ function HomePage() {
         } else {
           console.log("No user data found.");
         }
-      } else {
-        console.log("User Not Logged In");
-        setUserDetails(null);
-        navigate("/"); // Redirect to login if not authenticated
       }
+      //} else {
+      //   console.log("User Not Logged In");
+      //   setUserDetails(null);
+      //   navigate("/"); // Redirect to login if not authenticated
+      // }
     });
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   async function handleLogout() {
+    console.log("button Clicked");
     try {
+      setUser(null);
       await auth.signOut();
       navigate("/");
     } catch (error) {
@@ -40,12 +44,13 @@ function HomePage() {
   }
   return (
     <div>
-      <Header />
+      <Header onLogout={handleLogout} />
       <p>Welcome to the Blood Bank home page!</p>
+      <Outlet />
+      {/* <EmergencyNeed /> */}
       {/* {userDetails ? (
         <>
           <h4>Welcome {userDetails.firstName} </h4>
-          <UserList />
         </>
       ) : (
         <p>Loading...</p>

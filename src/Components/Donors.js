@@ -1,8 +1,8 @@
-// src/Donors.js
 import React, { useEffect, useState } from "react";
 import { db } from "./firebase"; // Adjust the path according to your structure
 import { collection, getDocs } from "firebase/firestore";
 import Header from "./Header";
+import "./Donors.css"; // Optional: Import a CSS file for styling
 
 function Donors() {
   const [donors, setDonors] = useState([]);
@@ -26,13 +26,24 @@ function Donors() {
       <Header />
       <div>
         <h2>Available Donors</h2>
-        <ul>
-          {donors.map((donor) => (
-            <li key={donor.id}>
-              {donor.name} - {donor.bloodGroup} - {donor.phoneNumber}
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Blood Group</th>
+              <th>Phone Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            {donors.map((donor) => (
+              <tr key={donor.id}>
+                <td>{donor.name}</td>
+                <td>{donor.bloodGroup}</td>
+                <td>{donor.phoneNumber}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
